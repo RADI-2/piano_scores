@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card rounded-card p-4 mt-5">
+                <h2 class="card-title text-center mb-4">Register New Account</h2>
+
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('register') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control rounded-pill" id="username" name="username" autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control rounded-pill" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control rounded-pill" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success rounded-pill">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

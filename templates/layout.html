@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Piano Scores | {{ title }}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #f8f9fa;
+            }
+
+            /* --- Navbar Styling --- */
+            .navbar {
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+
+            }
+
+            .navbar-brand img {
+                max-height: 45px;
+                width: auto;
+                border-radius: 5px;
+                transition: transform 0.2s;
+            }
+
+            .navbar-brand img:hover {
+                transform: scale(1.05);
+            }
+
+            .nav-link:hover {
+                color: #007bff !important;
+            }
+
+            /* --- RESPONSIVE LOGO CENTERING --- */
+            /* Only apply absolute centering on large screens (Desktop) */
+            @media (min-width: 992px) {
+                .navbar-brand-centered {
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    top: -25%;
+                    /* Adjust based on navbar padding */
+                    z-index: 1000;
+                }
+            }
+
+            /* Card Styles */
+            .rounded-card {
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition: box-shadow 0.3s;
+            }
+
+            .rounded-card:hover {
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+            }
+
+            /* Image Zoom Effect */
+            .zoom {
+                padding: 50px;
+                transition: transform .2s;
+                display: block;
+                margin: 0 auto;
+                position: relative;
+                z-index: 1;
+                cursor: zoom-in;
+            }
+
+            .zoom.active {
+                transform: scale(1.5);
+                z-index: 9999;
+                cursor: zoom-out;
+            }
+
+            /* Mobile adjustment for zoom to prevent overflow */
+            @media (max-width: 768px) {
+                .zoom {
+                    padding: 10px;
+                }
+
+                .zoom.active {
+                    transform: scale(1.1);
+                }
+            }
+
+            .score-preview {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+                border-top-left-radius: 12px;
+                border-top-right-radius: 12px;
+            }
+        </style>
+
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+            <div class="container-fluid position-relative">
+
+                <a class="navbar-brand navbar-brand-centered" href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Piano Scores Logo">
+                </a>
+
+                <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {% if logged_in_user %}
+                            <li class="nav-item">
+                                <a class="nav-link text-dark me-3" href="{{ url_for('favorites') }}">
+                                    <i class="fas fa-heart me-1"></i> Favorites
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="{{ url_for('composers_list') }}">
+                                    <i class="fas fa-user-tie me-1"></i> Composers
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        {% if logged_in_user %}
+                            <li class="nav-item">
+                                <span class="nav-link text-secondary">
+                                    Welcome, {{ logged_in_user['name'] }}
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" href="{{ url_for('logout') }}">
+                                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="{{ url_for('login') }}">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-primary" href="{{ url_for('register') }}">Register</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4 mb-5">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="alert-container">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        {% block scripts %}{% endblock %}
+    </body>
+    <script>
+        const zoomableImages = document.querySelectorAll('.zoom');
+        zoomableImages.forEach(image => {
+            image.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+    </script>
+
+</html>

@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card rounded-card p-4 shadow-lg">
+                <h1 class="mb-4 text-center text-primary">{{ score.name }}</h1>
+                <p class="text-center lead">
+                    Composer: <a href="{{ url_for('composer_scores', composer_id=score.composer_id) }}" class="text-decoration-none">{{ score.composer_name }}</a>
+                </p>
+
+                <div class="row align-items-center">
+                <!-- Score Preview (First Page) -->
+                    <div class="col-md-6 d-flex justify-content-center mb-4 mb-md-0">
+                        <div class="p-3 border rounded-3 bg-light text-center">
+                            <img src="{{ score.preview_location }}" alt="{{ score.name }} Score Preview" class="img-fluid rounded shadow-sm" style="max-height: 400px; width: auto;" onerror="this.onerror=null; this.src='https://placehold.co/200x280/D8C3A5/404040?text=Preview+Unavailable'">
+                            <small class="d-block mt-2 text-muted">First Page Preview</small>
+                        </div>
+                    </div>
+
+                <!-- Action Buttons -->
+                    <div class="col-md-6">
+                        <div class="d-grid gap-3">
+                        <!-- 1. View PDF in New Tab -->
+                            <a href="{{ score.pdf_location }}" target="_blank" class="btn btn-success btn-lg rounded-pill shadow-sm">
+                                <i class="fas fa-eye me-2"></i> View Full Score
+                            </a>
+
+                        <!-- 2. Download PDF -->
+                            <a href="{{ score.pdf_location }}" download class="btn btn-info btn-lg rounded-pill shadow-sm">
+                                <i class="fas fa-download me-2"></i> Download
+                            </a>
+
+                        <!-- 3. Add to Favorite -->
+                            <button id="favorite-btn" data-score-id="{{ score.id }}" class="btn btn-lg rounded-pill shadow-sm
+                                                                                            {% if is_favorite %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                                <i class="fas fa-heart me-2"></i>
+                                <span id="favorite-text">
+                                    {% if is_favorite %}Remove from Favorites{% else %}Add to Favorites{% endif %}
+                                </span>
+                            </button>
+
+                            <div id="favorite-status-message" class="text-center mt-2 small"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document.getElementById('favorite-btn').addEventListener('click', async function() {
+            const button = this;
+            const scoreId = button.getAttribute('data-score-id');
+            const statusMessage = document.getElementById('favorite-status-message');
+            const favoriteText = document.getElementById('favorite-text');
+
+            button.disabled = true;
+            statusMessage.textContent = 'Processing...';
+
+            try {
+                const response = await fetch(`/toggle_favorite/${scoreId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+
+                statusMessage.textContent = data.message;
+
+                if (data.action === 'added') {
+                    button.classList.remove('btn-outline-warning');
+                    button.classList.add('btn-warning');
+                    favoriteText.textContent = 'Remove from Favorites';
+                } else if (data.action === 'removed') {
+                    button.classList.remove('btn-warning');
+                    button.classList.add('btn-outline-warning');
+                    favoriteText.textContent = 'Add to Favorites';
+                }
+            } catch (error) {
+                console.error('Error toggling favorite:', error);
+                statusMessage.textContent = 'An error occurred. Please try again.';
+            } finally {
+                button.disabled = false;
+            }
+        });
+    </script>
+{% endblock %}

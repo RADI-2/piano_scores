@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1 class="mb-4 text-center text-warning"><i class="fas fa-heart me-2"></i> My Favorite Scores</h1>
+
+    {% if scores %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for score in scores %}
+                <div class="col">
+                    <div class="card rounded-card h-100 shadow-sm border-0 bg-light">
+                        <div class="card rounded-card h-100 shadow-sm border-0">
+                            <img class="card-img-top zoom score-preview" src="{{ score.preview_location }}" alt="Preview">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">{{ score.name }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">by {{ score.composer_name }}</h6>
+                                <a href="{{ url_for('score_details', score_id=score.id) }}" class="btn btn-sm btn-outline-primary rounded-pill mt-2">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center mt-5" role="alert">
+            You haven't added any scores to your favorites yet. Start exploring!
+            <p class="mt-2"><a href="{{ url_for('index') }}" class="btn btn-primary rounded-pill">View All Scores</a></p>
+        </div>
+    {% endif %}
+
+{% endblock %}

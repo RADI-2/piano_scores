@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1 class="mb-4 text-center">Scores by {{ composer.name }}</h1>
+
+    <a href="{{ url_for('composers_list') }}" class="btn btn-outline-secondary mb-3"><i class="fas fa-arrow-left me-1"></i> Back to Composers</a>
+
+    {% if scores %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for score in scores %}
+                <div class="col">
+                    <div class="card rounded-card h-100 shadow-sm border-0">
+                        <img class="card-img-top zoom score-preview" src="{{ score.preview_location }}" alt="Preview">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{ score.name }}</h5>
+
+                            <a href="{{ url_for('score_details', score_id=score.id) }}" class="btn btn-outline-primary btn-sm rounded-pill mt-2">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center mt-5" role="alert">
+            There is no available scores for {{composer.name}} yet, Please check other composers!
+            <p class="mt-2"><a href="{{ url_for('composers_list') }}" class="btn btn-primary rounded-pill">View All Composers</a></p>
+        </div>
+    {% endif %}
+
+{% endblock %}
