@@ -21,3 +21,6 @@ score_details.html: This page displays all information about a specific score. I
 favorites.html: This template shows all the scores a user has added to their favorites. If no favorites exist, the page shows a friendly message along with a button that sends the user back to the main page to explore more scores. This decision improved user experience by ensuring that even empty states look purposeful and helpful.
 
 composer_list.html and composers_score.html: The composer list shows all composers along with their photos and a button to explore their scores. The second page (composers_score.html) displays all scores for that chosen composer. Splitting these into two pages provides better navigation and results in a cleaner interface.
+
+#### Viewpage:
+https://piano-scores.onrender.com
