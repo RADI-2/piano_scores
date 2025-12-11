@@ -1,0 +1,23 @@
+# Piano Scores
+#### Video Demo:  <URL HERE>
+#### Description:
+Piano Scores is a web application that allows users to browse, preview, and download piano sheet music. I created this project because I wanted an organized and user-friendly platform specifically for pianists, where scores could be explored by composer, saved as favorites, and viewed in a visually clean interface. The goal of the project is to offer an efficient way for users to manage their scores while maintaining simplicity and accessibility.
+The site uses Flask as the backend framework, Bootstrap for styling, and an SQLite database named piano_scores.db to store users, composers, scores, and favorites. Throughout the project, I tried to keep the interface minimal and intuitive, and I relied heavily on templating and code reusability to avoid repetition. The application requires users to register and log in before interacting with the full set of features, ensuring personal data such as favorites remain secure for each user.
+
+The project is organized around a set of HTML templates, a main Flask application (app.py), and a SQLite database. Most pages extend layout.html, which contains the navigation bar, site branding, and logic for displaying certain items depending on whether the user is logged in. Templates follow Jinja2 syntax to generate content dynamically.
+Users start on the login page, and after authentication, are redirected to the main page, which contains paginated score cards. Each score card displays the score name, the composer, and a zoomable preview of the first page. From there, the user can navigate to detailed pages for each score, add items to their favorites, download the full PDF, or view the score online.
+
+#### File Descriptions:
+app.py: This file contains the entire application logic. It manages routing, user authentication, database queries, session handling, and the back-end logic for adding favorites, downloading files, or rendering score details. One of the main design decisions here was to keep each route small and readable by separating database queries clearly and using helper functions where necessary. I avoided cramming too much logic into single routes to maintain clarity.
+
+layout.html: This is the base template extended by all other pages. It contains the navigation bar, site logo, and conditional rendering that detects whether the user is logged in. If the user has an active session, the navbar displays links to composers, favorites, and logout. If not logged in, only the login and register options are shown. The layout also loads Bootstrap and includes styles for zooming images. The choice to centralize these components in one layout minimized redundancy and made future styling changes easier.
+
+login.html and register.html: Both of these pages contain forms for user authentication. login.html requires a username and password, while register.html requires a username, a password, and password confirmation. In register.html, additional validation ensures passwords match and that the username is not already taken. I chose to separate these into two distinct templates instead of reusing one because their validation requirements differ and separating them simplifies the logic.
+
+index.html: This is the main home page after logging in. It displays score cards with pagination, showing 20 cards per page. Each card includes the score title, composer, and first page preview. I implemented pagination because loading all scores at once would have affected performance and user experience. The zoom effect on images was added to make previews more readable without requiring the user to open the score.
+
+score_details.html: This page displays all information about a specific score. It includes three buttons: Add to Favorites, Download, and View Online. This separation was intentional, as I wanted users to have clear options depending on how they prefer to access their scores. Downloading allows offline use, while viewing online is useful for quick checks.
+
+favorites.html: This template shows all the scores a user has added to their favorites. If no favorites exist, the page shows a friendly message along with a button that sends the user back to the main page to explore more scores. This decision improved user experience by ensuring that even empty states look purposeful and helpful.
+
+composer_list.html and composers_score.html: The composer list shows all composers along with their photos and a button to explore their scores. The second page (composers_score.html) displays all scores for that chosen composer. Splitting these into two pages provides better navigation and results in a cleaner interface.
